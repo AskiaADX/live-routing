@@ -285,6 +285,10 @@
         setTimeout(executeLiveRouting, 250);
     }
     
+    /**
+     * Manage the live routing for classical askia form (Non ADCs)
+     * Trigger the answers to the server side on the event change or input
+     */
     document.addEventListener("DOMContentLoaded", function(){
         
         /**
