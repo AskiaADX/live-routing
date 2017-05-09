@@ -39,5 +39,14 @@ if (window.askia
 
 > Attention, make sure to call this method `askia.triggerAnswer();` only if the current question is a source question of a live routing on the page to limit the number of requests send to the server.
 
-The current implementation of the live routings in `askia.ajax.min.js` are for `askiaShowQuestion`, `askiaHideQuestion` and `askiaReload`.
+The current implementation of the live routings in `askia.ajax.min.js` are for [askiaShowQuestion](https://github.com/AskiaADX/ADXStudio/wiki/Javascript-Ajax-Events#askiashowquestion), [askiaHideQuestion](https://github.com/AskiaADX/ADXStudio/wiki/Javascript-Ajax-Events#askiahidequestion) and [askiaReload](https://github.com/AskiaADX/ADXStudio/wiki/Javascript-Ajax-Events#askiareload).
+
+[For more details...](https://github.com/AskiaADX/ADXStudio/wiki/Javascript-Ajax-Events)
+
+
+
+
+
+
+
 
