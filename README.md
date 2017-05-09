@@ -24,7 +24,7 @@ This file manage the [AJAX](https://github.com/AskiaADX/ADXStudio/wiki/Javascrip
 ## ADC
 For the ADCs, you will need to call `askia.triggerAnswer()` to send the input's form to the server side when needed so usually when the input's data change. An example of the code used in an ADC:
 
-<pre>
+```javascript
 /**
 * Send the input's form to the server side only if the current question
 * is a source question of a live routing on the page
@@ -34,5 +34,10 @@ if (window.askia
   && window.arrLiveRoutingShortcut.length > 0
   && window.arrLiveRoutingShortcut.indexOf(options.currentQuestion) >= 0) {
   askia.triggerAnswer();
-}</pre>
+}
+```
+
+> Attention, make sure to call this method `askia.triggerAnswer();` only if the current question is a source question of a live routing on the page to limit the number of requests send to the server.
+
+The current implementation of the live routings in `askia.ajax.min.js` are for `askiaShowQuestion`, `askiaHideQuestion` and `askiaReload`.
 
