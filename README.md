@@ -42,11 +42,3 @@ if (window.askia
 The current implementation of the live routings in `askia.ajax.min.js` are for [askiaShowQuestion](https://github.com/AskiaADX/ADXStudio/wiki/Javascript-Ajax-Events#askiashowquestion), [askiaHideQuestion](https://github.com/AskiaADX/ADXStudio/wiki/Javascript-Ajax-Events#askiahidequestion) and [askiaReload](https://github.com/AskiaADX/ADXStudio/wiki/Javascript-Ajax-Events#askiareload).
 
 [For more details...](https://github.com/AskiaADX/ADXStudio/wiki/Javascript-Ajax-Events)
-
-
-
-
-
-
-
-
