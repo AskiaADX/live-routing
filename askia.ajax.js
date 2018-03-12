@@ -270,7 +270,7 @@
     isExecutingLiveRouting = true;
     shouldReExecuteLiveRouting = false;
     askia.ajax({
-      url: 'AskiaExt.dll',
+      url: '../cgi-bin/AskiaExt.dll',
       data: askia.serializeForm(document.forms[0], 'DoLiveRouting'),
       success: onLiveRoutingSuccess,
       complete: onLiveRoutingComplete
