@@ -332,7 +332,7 @@
                    el.parentElement.className.indexOf('askia-grid-row') >= 0 ||
                    el.parentElement.parentElement.className.indexOf('askia-grid-row') >= 0)  && 
                   (el.type === 'radio' || el.type === 'checkbox')) || el.nodeName === 'SELECT')) {
-        askia.triggerAnswer();
+          setTimeout(function(){ askia.triggerAnswer(); }, 150);
       }
     });
     /**
