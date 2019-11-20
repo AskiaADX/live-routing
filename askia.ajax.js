@@ -11,9 +11,9 @@
   window.CustomEvent = CustomEvent;
 })();
 (function () {
-  if (!window.arrLiveRoutingInputCode ||  window.arrLiveRoutingInputCode.length <= 0 ) {
-    	return;    
-  }
+  //if (!window.arrLiveRoutingInputCode ||  window.arrLiveRoutingInputCode.length <= 0 ) {
+  //  	return;    
+  //}
   if (window.AskiaScript) {
     AskiaScript.executeLiveRouting = function () {};
   } 
