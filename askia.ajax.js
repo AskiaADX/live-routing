@@ -164,8 +164,8 @@
     askiaAnswer: executeLiveRouting,
     askiaShowQuestion: executeShowHideQuestion,
     askiaHideQuestion: executeShowHideQuestion,
-    askiaShowResponses: null,
-    askiaHideResponses: null,
+    askiaShowResponses: executeShowHideResponses,
+    askiaHideResponses: executeShowHideResponses,
     askiaReload: executeReload,
     askiaSetValue: null,
     askiaShowMessage: null,
@@ -187,6 +187,10 @@
     var event = new CustomEvent(eventName, eventInit);
     return document.dispatchEvent(event);
   };
+
+  askia.hideResponses = function hideResponses(){
+    askia.defaultEventActions.askiaHideResponses();
+  }
 
   /**
    * Trigger an event when the respondent is answering
@@ -220,6 +224,41 @@
     var l;
     for (i = 0, l = elements.length; i < l; i += 1) {
       elements[i].style.display = isShow ? '' : 'none';
+    }
+  }
+
+  /**
+   * Show or hide responses
+   *
+   * @param {Object} data Definition of the action to do
+   * @param {"showResponses"|"hideResponses"} data.action Action to execute
+   * @param {Number} data.inputCode Input code associated with the question
+   */
+  function executeShowHideResponses (data) {
+    if (!(data.question.inputCode >= 0)) {
+      return;
+    }
+    var questionClassName = '.askia-question-' + data.question.inputCode;
+    var orderLength = data.order.length;
+    var showResponseInputCodes = [];
+    var responses = document.querySelectorAll(questionClassName + ' .askia-response');
+
+    for (var i = 0; i < responses.length; i++) {
+      responses[i].style.display = "";
+    }
+
+    for (var k = 0; k < orderLength; k++) {
+      showResponseInputCodes.push(parseInt(data.order[k].inputCode));
+    }
+
+    for (var j = 0; j < responses.length; j++) {
+      var str = (responses[j].children[0].id).split('_');
+      if (showResponseInputCodes.indexOf(parseInt(str[1])) < 0){
+          if(document.getElementById('askia-input'+data.question.inputCode+'_'+parseInt(str[1])) != null){
+            document.getElementById('askia-input'+data.question.inputCode+'_'+parseInt(str[1])).checked = false;
+            document.getElementById('askia-input'+data.question.inputCode+'_'+parseInt(str[1])).parentElement.style.display = "none";
+          }
+      }
     }
   }
 
@@ -295,6 +334,7 @@
       }
       // Default behaviour
       if (typeof askia.defaultEventActions[eventName] === 'function') {
+        console.log(eventName);
         askia.defaultEventActions[eventName](itemAction);
       }
     }
