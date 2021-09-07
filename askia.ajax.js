@@ -14,7 +14,7 @@
   //if (!window.arrLiveRoutingInputCode ||  window.arrLiveRoutingInputCode.length <= 0 ) {
   //  	return;
   //}
-  if (window.AskiaScript & !window.isDesignPreview) {
+  if (window.AskiaScript) {
     AskiaScript.executeLiveRouting = function () {};
   }
   // Augment or create the public `askia` namespace
@@ -164,10 +164,10 @@
     askiaAnswer: executeLiveRouting,
     askiaShowQuestion: executeShowHideQuestion,
     askiaHideQuestion: executeShowHideQuestion,
-    askiaShowResponses: executeShowHideResponses,
-    askiaHideResponses: executeShowHideResponses,
+    askiaShowResponses: null,
+    askiaHideResponses: null,
     askiaReload: executeReload,
-    askiaSetValue: null,
+    askiaSetValue: executeSetValue,
     askiaShowMessage: null,
     askiaChangeQuestionsOrder: null,
     askiaChangeResponsesOrder: null,
@@ -187,10 +187,6 @@
     var event = new CustomEvent(eventName, eventInit);
     return document.dispatchEvent(event);
   };
-
-  askia.hideResponses = function hideResponses(){
-    askia.defaultEventActions.askiaHideResponses();
-  }
 
   /**
    * Trigger an event when the respondent is answering
@@ -228,41 +224,6 @@
   }
 
   /**
-   * Show or hide responses
-   *
-   * @param {Object} data Definition of the action to do
-   * @param {"showResponses"|"hideResponses"} data.action Action to execute
-   * @param {Number} data.inputCode Input code associated with the question
-   */
-  function executeShowHideResponses (data) {
-    if (!(data.question.inputCode >= 0)) {
-      return;
-    }
-    var questionClassName = '.askia-question-' + data.question.inputCode;
-    var orderLength = data.order.length;
-    var showResponseInputCodes = [];
-    var responses = document.querySelectorAll(questionClassName + ' .askia-response');
-
-    for (var i = 0; i < responses.length; i++) {
-      responses[i].style.display = "";
-    }
-
-    for (var k = 0; k < orderLength; k++) {
-      showResponseInputCodes.push(parseInt(data.order[k].inputCode));
-    }
-
-    for (var j = 0; j < responses.length; j++) {
-      var str = (responses[j].children[0].id).split('_');
-      if (showResponseInputCodes.indexOf(parseInt(str[1])) < 0){
-          if(document.getElementById('askia-input'+data.question.inputCode+'_'+parseInt(str[1])) != null){
-            document.getElementById('askia-input'+data.question.inputCode+'_'+parseInt(str[1])).checked = false;
-            document.getElementById('askia-input'+data.question.inputCode+'_'+parseInt(str[1])).parentElement.style.display = "none";
-          }
-      }
-    }
-  }
-
-  /**
    * Update a live caption
    *
    * @param {Object} data Definition of the action to do
@@ -290,6 +251,28 @@
   function executeReload () {
     if (isPreventReload) return;
     window.location.reload();
+  }
+
+  /**
+   * Set value Ajax
+   */
+  function executeSetValue (data) {
+    let val = data.value;
+    if (Array.isArray(val)){
+      for (var i = 0; i < val.length; i++) {
+        let checkEl = document.querySelector('#askia-input' + data.question.inputCode + '_' + val[i].inputCode);
+        if (checkEl)
+          checkEl.checked = true;
+      }
+    } else {
+      if (typeof val === 'string'){
+        let openEl = document.querySelector('input[name="S'+ data.question.inputCode +'"]');
+        if (openEl) openEl.value = '', openEl.value = val;
+      } else {
+        let numberEl = document.querySelector('input[name="C'+ data.question.inputCode +'"]');
+        if (numberEl) numberEl.value = val;
+      }
+    }
   }
 
   /* ---======== Live Routing Management ========--- */
@@ -334,7 +317,6 @@
       }
       // Default behaviour
       if (typeof askia.defaultEventActions[eventName] === 'function') {
-        console.log(eventName);
         askia.defaultEventActions[eventName](itemAction);
       }
     }
@@ -372,7 +354,7 @@
                    el.parentElement.className.indexOf('askia-grid-row') >= 0 ||
                    el.parentElement.parentElement.className.indexOf('askia-grid-row') >= 0)  &&
                   (el.type === 'radio' || el.type === 'checkbox')) || el.nodeName === 'SELECT')) {
-          askia.triggerAnswer();
+          setTimeout(function(){ askia.triggerAnswer(); }, 150);
       }
     });
     /**
@@ -402,7 +384,6 @@
     if (window.arrLiveRoutingShortcut && window.arrLiveRoutingShortcut.length >= 1) {
         askia.triggerAnswer();
     }
-
   });
 
 }());
