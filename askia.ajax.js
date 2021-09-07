@@ -12,11 +12,11 @@
 })();
 (function () {
   //if (!window.arrLiveRoutingInputCode ||  window.arrLiveRoutingInputCode.length <= 0 ) {
-  //  	return;    
+  //  	return;
   //}
   if (window.AskiaScript) {
     AskiaScript.executeLiveRouting = function () {};
-  } 
+  }
   // Augment or create the public `askia` namespace
   var askia = window.askia || {};
   if (!window.askia) {
@@ -59,7 +59,7 @@
 
     for (i = 0, l = els.length; i < l; i += 1) {
       var el = els[i];
-            
+
       if (!el.name || el.disabled || el.value === null ||
                     rgSubmitter.test(el.type) ||
                     !rgSubmittable.test(el.nodeName) ||
@@ -167,7 +167,7 @@
     askiaShowResponses: null,
     askiaHideResponses: null,
     askiaReload: executeReload,
-    askiaSetValue: null,
+    askiaSetValue: executeSetValue,
     askiaShowMessage: null,
     askiaChangeQuestionsOrder: null,
     askiaChangeResponsesOrder: null,
@@ -253,6 +253,28 @@
     window.location.reload();
   }
 
+  /**
+   * Set value Ajax
+   */
+  function executeSetValue (data) {
+    let val = data.value;
+    if (Array.isArray(val)){
+      for (var i = 0; i < val.length; i++) {
+        let checkEl = document.querySelector('#askia-input' + data.question.inputCode + '_' + val[i].inputCode);
+        if (checkEl)
+          checkEl.checked = true;
+      }
+    } else {
+      if (typeof val === 'string'){
+        let openEl = document.querySelector('input[name="S'+ data.question.inputCode +'"]');
+        if (openEl) openEl.value = '', openEl.value = val;
+      } else {
+        let numberEl = document.querySelector('input[name="C'+ data.question.inputCode +'"]');
+        if (numberEl) numberEl.value = val;
+      }
+    }
+  }
+
   /* ---======== Live Routing Management ========--- */
 
   var isExecutingLiveRouting = false;     // Flag to avoid several live routing request
@@ -311,13 +333,13 @@
     }
     setTimeout(executeLiveRouting, 250);
   }
-    
+
   /**
    * Manage the live routing for classical askia form (Non ADCs)
    * Trigger the answers to the server side on the event change or input
    */
   document.addEventListener('DOMContentLoaded', function (){
-        
+
     /**
      * Change event listener for the closed question form controls
      */
@@ -325,12 +347,12 @@
       var el = event.target || event.srcElement;
       // Retrieve the InputCode number of the question
       var rg = /^[a-z]+([0-9]+)(?:\s*|\_*)/i.exec(el.name);
-      if (rg && (window.arrLiveRoutingInputCode.indexOf(rg[1]) > -1) && 
-                (((el.nodeName === 'INPUT') && 
+      if (rg && (window.arrLiveRoutingInputCode.indexOf(rg[1]) > -1) &&
+                (((el.nodeName === 'INPUT') &&
                   (el.parentElement.className.indexOf('askia-response') >= 0 ||
                    el.parentElement.className.indexOf('askia-control') >= 0 ||
                    el.parentElement.className.indexOf('askia-grid-row') >= 0 ||
-                   el.parentElement.parentElement.className.indexOf('askia-grid-row') >= 0)  && 
+                   el.parentElement.parentElement.className.indexOf('askia-grid-row') >= 0)  &&
                   (el.type === 'radio' || el.type === 'checkbox')) || el.nodeName === 'SELECT')) {
           setTimeout(function(){ askia.triggerAnswer(); }, 150);
       }
@@ -342,15 +364,15 @@
       var el = event.target || event.srcElement;
       // Retrieve the InputCode number of the question
       var rg = /^[a-z]+([0-9]+)(?:\s*|\_*)/i.exec(el.name);
-      if (rg && (window.arrLiveRoutingInputCode.indexOf(rg[1]) > -1) && 
-                (((el.nodeName === 'TEXTAREA') || 
+      if (rg && (window.arrLiveRoutingInputCode.indexOf(rg[1]) > -1) &&
+                (((el.nodeName === 'TEXTAREA') ||
                   ((el.nodeName === 'INPUT') && (el.type === 'color' ||
                     el.type === 'date' || el.type === 'datetime' ||
                     el.type === 'email' || el.type === 'month' ||
                     el.type === 'number' || el.type === 'password' ||
                     el.type === 'range' || el.type === 'search' ||
                     el.type === 'tel' || el.type === 'text' ||
-                    el.type === 'time' || el.type === 'url' || el.type === 'week'))) && 
+                    el.type === 'time' || el.type === 'url' || el.type === 'week'))) &&
                  (el.parentElement.className.indexOf('askia-response') >= 0 ||
                   el.parentElement.className.indexOf('askia-control') >= 0 ||
                   el.parentElement.className.indexOf('askia-grid-row') >= 0 ||
@@ -359,7 +381,9 @@
         askia.triggerAnswer();
       }
     });
-    askia.triggerAnswer();
+    if (window.arrLiveRoutingShortcut && window.arrLiveRoutingShortcut.length >= 1) {
+        askia.triggerAnswer();
+    }
   });
 
 }());
